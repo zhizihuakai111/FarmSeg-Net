@@ -4,81 +4,84 @@
 FarmSeg-Net 是一个面向农田场景三维点云的语义分割网络，实现于 TensorFlow compat.v1 框架。项目在 RandLA-Net 的基础上，结合多层嵌套解码结构和注意力特征融合模块，针对大规模稀疏农田点云的地物分类（如建筑、农田、硬地、道路、树木等）进行优化。数据组织采用类似 S3DIS 的 Area_x/.../Annotations 风格，并配套提供从原始标注文本生成 PLY 点云、KDTree 与重投影索引的完整预处理流水线。为兼顾精度与效率，项目集成了 C++/Cython 实现的 KNN 搜索与网格下采样算子，支持在单 GPU 上对大规模农田场景进行端到端训练、测试与特征可视化（UMAP / PCA / t-SNE）。
 
 ## 环境与依赖
-Name                      Version                  Build  Channel
-absl-py                   0.15.0                   pypi_0    pypi
-astunparse                1.6.3                    pypi_0    pypi
-cached-property           1.5.2                    pypi_0    pypi
-cachetools                4.2.4                    pypi_0    pypi
-certifi                   2024.12.14               pypi_0    pypi
-charset-normalizer        2.0.12                   pypi_0    pypi
-clang                     5.0                      pypi_0    pypi
-cycler                    0.11.0                   pypi_0    pypi
-cython                    0.29.15                  pypi_0    pypi
-dataclasses               0.8                      pypi_0    pypi
-flatbuffers               1.12                     pypi_0    pypi
-gast                      0.4.0                    pypi_0    pypi
-google-auth               2.22.0                   pypi_0    pypi
-google-auth-oauthlib      0.4.6                    pypi_0    pypi
-google-pasta              0.2.0                    pypi_0    pypi
-grpcio                    1.48.2                   pypi_0    pypi
-h5py                      3.1.0                    pypi_0    pypi
-idna                      3.10                     pypi_0    pypi
-importlib-metadata        4.8.3                    pypi_0    pypi
-importlib-resources       5.4.0                    pypi_0    pypi
-joblib                    1.1.1                    pypi_0    pypi
-keras                     2.6.0                    pypi_0    pypi
-keras-preprocessing       1.1.2                    pypi_0    pypi
-kiwisolver                1.3.1                    pypi_0    pypi
-llvmlite                  0.36.0                   pypi_0    pypi
-markdown                  3.3.7                    pypi_0    pypi
-matplotlib                3.3.4                    pypi_0    pypi
-numba                     0.53.1                   pypi_0    pypi
-numpy                     1.19.5                   pypi_0    pypi
-oauthlib                  3.2.2                    pypi_0    pypi
-open3d-python             0.3.0.0                  pypi_0    pypi
-openssl                   1.0.2l                        0    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-opt-einsum                3.3.0                    pypi_0    pypi
-pandas                    0.25.3                   pypi_0    pypi
-pillow                    8.4.0                    pypi_0    pypi
-pip                       21.3.1                   pypi_0    pypi
-plyfile                   0.8                      pypi_0    pypi
-protobuf                  3.19.6                   pypi_0    pypi
-pyasn1                    0.5.1                    pypi_0    pypi
-pyasn1-modules            0.3.0                    pypi_0    pypi
-pynndescent               0.5.13                   pypi_0    pypi
-pyparsing                 3.0.7                    pypi_0    pypi
-python                    3.6.2                         0    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-python-dateutil           2.9.0.post0              pypi_0    pypi
-pytz                      2024.2                   pypi_0    pypi
-pyyaml                    5.4                      pypi_0    pypi
-readline                  6.2                           2    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-requests                  2.27.1                   pypi_0    pypi
-requests-oauthlib         2.0.0                    pypi_0    pypi
-rsa                       4.9                      pypi_0    pypi
-scikit-learn              0.22.2                   pypi_0    pypi
-scipy                     1.4.1                    pypi_0    pypi
-seaborn                   0.11.2                   pypi_0    pypi
-setuptools                59.6.0                   pypi_0    pypi
-six                       1.15.0                   pypi_0    pypi
-sqlite                    3.13.0                        0    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-tensorboard               2.10.1                   pypi_0    pypi
-tensorboard-data-server   0.6.1                    pypi_0    pypi
-tensorboard-plugin-wit    1.8.1                    pypi_0    pypi
-tensorflow-estimator      2.8.0                    pypi_0    pypi
-tensorflow-gpu            2.6.0                    pypi_0    pypi
-termcolor                 1.1.0                    pypi_0    pypi
-threadpoolctl             3.1.0                    pypi_0    pypi
-tk                        8.5.18                        0    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-tqdm                      4.64.1                   pypi_0    pypi
-typing-extensions         3.7.4.3                  pypi_0    pypi
-umap-learn                0.5.7                    pypi_0    pypi
-urllib3                   1.26.20                  pypi_0    pypi
-werkzeug                  2.0.3                    pypi_0    pypi
-wheel                     0.37.1                   pypi_0    pypi
-wrapt                     1.12.1                   pypi_0    pypi
-xz                        5.2.3                         0    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-zipp                      3.6.0                    pypi_0    pypi
-zlib                      1.2.11                        0    https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+推荐使用 Conda 创建环境，并与下表版本一致以便复现。
+
+| Name | Version | Channel |
+|------|---------|---------|
+| absl-py | 0.15.0 | pypi_0 |
+| astunparse | 1.6.3 | pypi_0 |
+| cached-property | 1.5.2 | pypi_0 |
+| cachetools | 4.2.4 | pypi_0 |
+| certifi | 2024.12.14 | pypi_0 |
+| charset-normalizer | 2.0.12 | pypi_0 |
+| clang | 5.0 | pypi_0 |
+| cycler | 0.11.0 | pypi_0 |
+| cython | 0.29.15 | pypi_0 |
+| dataclasses | 0.8 | pypi_0 |
+| flatbuffers | 1.12 | pypi_0 |
+| gast | 0.4.0 | pypi_0 |
+| google-auth | 2.22.0 | pypi_0 |
+| google-auth-oauthlib | 0.4.6 | pypi_0 |
+| google-pasta | 0.2.0 | pypi_0 |
+| grpcio | 1.48.2 | pypi_0 |
+| h5py | 3.1.0 | pypi_0 |
+| idna | 3.10 | pypi_0 |
+| importlib-metadata | 4.8.3 | pypi_0 |
+| importlib-resources | 5.4.0 | pypi_0 |
+| joblib | 1.1.1 | pypi_0 |
+| keras | 2.6.0 | pypi_0 |
+| keras-preprocessing | 1.1.2 | pypi_0 |
+| kiwisolver | 1.3.1 | pypi_0 |
+| llvmlite | 0.36.0 | pypi_0 |
+| markdown | 3.3.7 | pypi_0 |
+| matplotlib | 3.3.4 | pypi_0 |
+| numba | 0.53.1 | pypi_0 |
+| numpy | 1.19.5 | pypi_0 |
+| oauthlib | 3.2.2 | pypi_0 |
+| open3d-python | 0.3.0.0 | pypi_0 |
+| openssl | 1.0.2l | conda free |
+| opt-einsum | 3.3.0 | pypi_0 |
+| pandas | 0.25.3 | pypi_0 |
+| pillow | 8.4.0 | pypi_0 |
+| pip | 21.3.1 | pypi_0 |
+| plyfile | 0.8 | pypi_0 |
+| protobuf | 3.19.6 | pypi_0 |
+| pyasn1 | 0.5.1 | pypi_0 |
+| pyasn1-modules | 0.3.0 | pypi_0 |
+| pynndescent | 0.5.13 | pypi_0 |
+| pyparsing | 3.0.7 | pypi_0 |
+| python | 3.6.2 | conda free |
+| python-dateutil | 2.9.0.post0 | pypi_0 |
+| pytz | 2024.2 | pypi_0 |
+| pyyaml | 5.4 | pypi_0 |
+| readline | 6.2 | conda |
+| requests | 2.27.1 | pypi_0 |
+| requests-oauthlib | 2.0.0 | pypi_0 |
+| rsa | 4.9 | pypi_0 |
+| scikit-learn | 0.22.2 | pypi_0 |
+| scipy | 1.4.1 | pypi_0 |
+| seaborn | 0.11.2 | pypi_0 |
+| setuptools | 59.6.0 | pypi_0 |
+| six | 1.15.0 | pypi_0 |
+| sqlite | 3.13.0 | conda |
+| tensorboard | 2.10.1 | pypi_0 |
+| tensorboard-data-server | 0.6.1 | pypi_0 |
+| tensorboard-plugin-wit | 1.8.1 | pypi_0 |
+| tensorflow-estimator | 2.8.0 | pypi_0 |
+| tensorflow-gpu | 2.6.0 | pypi_0 |
+| termcolor | 1.1.0 | pypi_0 |
+| threadpoolctl | 3.1.0 | pypi_0 |
+| tk | 8.5.18 | conda |
+| tqdm | 4.64.1 | pypi_0 |
+| typing-extensions | 3.7.4.3 | pypi_0 |
+| umap-learn | 0.5.7 | pypi_0 |
+| urllib3 | 1.26.20 | pypi_0 |
+| werkzeug | 2.0.3 | pypi_0 |
+| wheel | 0.37.1 | pypi_0 |
+| wrapt | 1.12.1 | pypi_0 |
+| xz | 5.2.3 | conda |
+| zipp | 3.6.0 | pypi_0 |
+| zlib | 1.2.11 | conda |
 
 ## 数据预处理
 ### 数据准备
