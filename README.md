@@ -1,7 +1,7 @@
 # FarmSeg-Net
 
 ## 项目简介
-FarmSeg-Net 是一个面向农田场景三维点云的语义分割网络，实现于 TensorFlow compat.v1 框架。项目在 RandLA-Net 的基础上，结合多层嵌套解码结构和注意力特征融合模块，针对大规模稀疏农田点云的地物分类（如建筑、农田、硬地、道路、树木等）进行优化。数据组织采用类似 S3DIS 的 Area_x/.../Annotations 风格，并配套提供从原始标注文本生成 PLY 点云、KDTree 与重投影索引的完整预处理流水线。为兼顾精度与效率，项目集成了 C++/Cython 实现的 KNN 搜索与网格下采样算子，支持在单 GPU 上对大规模农田场景进行端到端训练、测试与特征可视化（UMAP / PCA / t-SNE）。
+FarmSeg-Net 是一个面向农田场景三维点云的语义分割网络，实现于 TensorFlow 框架。项目在 RandLA-Net 的基础上，结合多层嵌套解码结构和注意力特征融合模块，针对大规模稀疏农田点云的地物分类（如建筑、农田、道路、树木等）进行优化。数据组织采用类似 S3DIS 的 Area_x/.../Annotations 风格，并配套提供从原始标注文本生成 PLY 点云、KDTree 与重投影索引的完整预处理流水线。为兼顾精度与效率，项目集成了 C++/Cython 实现的 KNN 搜索与网格下采样算子，支持在单 GPU 上对大规模农田场景进行端到端训练、测试与特征可视化（UMAP / PCA / t-SNE）。
 ### 部分结果展示
 ### 语义分割结果
 ![point_cloud_comparison_20250101184411](https://github.com/user-attachments/assets/b909bf2e-f4fe-4a52-b549-1f5d08554e77)
