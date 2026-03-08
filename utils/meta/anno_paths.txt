@@ -1,0 +1,6 @@
+Area_1/farm_1/Annotations
+Area_2/farm_2/Annotations
+Area_3/farm_3/Annotations
+Area_4/farm_4/Annotations
+Area_5/farm_5/Annotations
+Area_6/farm_6/Annotations

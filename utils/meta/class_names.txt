@@ -1,0 +1,8 @@
+building
+farmland
+hardground
+if
+otherfarmland
+others
+road
+tree
